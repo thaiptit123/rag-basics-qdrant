@@ -28,15 +28,15 @@ model = SentenceTransformer('keepitreal/vietnamese-sbert')
 
 # Dữ liệu giả lập
 sample_data = [
-    {"text": "Luật doanh nghiệp 2020 quy định về thành lập công ty TNHH.", "topic": "doanh nghiệp", "date": 2020},
-    {"text": "Mức phạt vi phạm nồng độ cồn khi lái xe ô tô là 30-40 triệu.", "topic": "giao thông", "date": 2019},
-    {"text": "Quy định về thuế thu nhập cá nhân năm 2023 có nhiều điểm mới.", "topic": "thuế", "date": 2023},
+    {"text": "Luật doanh nghiệp 2020 quy định về thành lập công ty TNHH.", "topic": "doanh nghiệp", "issuance_year": 2020},
+    {"text": "Mức phạt vi phạm nồng độ cồn khi lái xe ô tô là 30-40 triệu.", "topic": "giao thông", "issuance_year": 2019},
+    {"text": "Quy định về thuế thu nhập cá nhân năm 2023 có nhiều điểm mới.", "topic": "thuế", "issuance_year": 2023},
 ]
 
 def insert_data():
     # Tạo Payload Index trước khi insert để tối ưu tốc độ lọc
     client.create_payload_index(collection_name=COLLECTION_NAME, field_name="topic", field_schema="keyword")
-    client.create_payload_index(collection_name=COLLECTION_NAME, field_name="date", field_schema="integer")
+    client.create_payload_index(collection_name=COLLECTION_NAME, field_name="issuance_year", field_schema="integer")
 
     points = []
     for doc in sample_data:
@@ -50,7 +50,7 @@ def insert_data():
         point = PointStruct(
             id=point_id, 
             vector=vector,
-            payload={"text": doc["text"], "topic": doc["topic"], "date": doc["date"]} # Đây chính là Metadata
+            payload={"text": doc["text"], "topic": doc["topic"], "issuance_year": doc["issuance_year"]} # Đây chính là Metadata
         )
         points.append(point)
         
@@ -65,7 +65,7 @@ class SearchRequest(BaseModel):
     query: str
     top_k: int = 2
     topic: Optional[str] = None
-    date: Optional[int] = None
+    issuance_year: Optional[int] = None
     threshold: float = 0.5
 
 @app.post("/search")
@@ -77,8 +77,13 @@ def search_documents(req: SearchRequest):
     must_conditions = []
     if req.topic:
         must_conditions.append(FieldCondition(key="topic", match=MatchValue(value=req.topic)))
-    if req.date:
-        must_conditions.append(FieldCondition(key="date", match=MatchValue(value=req.date)))
+    if req.issuance_year is not None:
+        must_conditions.append(
+            FieldCondition(
+                key="issuance_year",
+                match=MatchValue(value=req.issuance_year),
+            )
+        )
         
     query_filter = Filter(must=must_conditions) if must_conditions else None
         
@@ -94,7 +99,7 @@ def search_documents(req: SearchRequest):
     return {
         "query": req.query,
         "results": [
-            {"score": hit.score, "text": hit.payload["text"], "topic": hit.payload["topic"]} 
+            {"score": hit.score, "text": hit.payload["text"], "topic": hit.payload["topic"], "issuance_year": hit.payload["issuance_year"]} 
             for hit in search_result
         ]
     }
