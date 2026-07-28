@@ -59,6 +59,11 @@ def insert_data():
 
 insert_data()
 
+collection_info = client.get_collection(COLLECTION_NAME)
+print("\nPayload schema:")
+for field_name, field_schema in collection_info.payload_schema.items():
+    print(f"- {field_name}: {field_schema.data_type.value}")
+
 app = FastAPI(title="Qdrant Search API")
 
 class SearchRequest(BaseModel):
