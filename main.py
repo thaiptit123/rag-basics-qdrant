@@ -1,0 +1,103 @@
+from qdrant_client import QdrantClient
+from qdrant_client.models import VectorParams, Distance
+from sentence_transformers import SentenceTransformer
+from qdrant_client.models import PointStruct
+import uuid
+from fastapi import FastAPI
+from pydantic import BaseModel
+from typing import Optional
+from qdrant_client.models import Filter, FieldCondition, MatchValue
+import uvicorn
+
+client = QdrantClient(url="http://localhost:6333")
+COLLECTION_NAME = "legal_documents"
+
+def init_db():
+    if not client.collection_exists(COLLECTION_NAME):
+        # Khởi tạo không gian vector 768 chiều, dùng Cosine Similarity
+        client.create_collection(
+            collection_name=COLLECTION_NAME,
+            vectors_config=VectorParams(size=768, distance=Distance.COSINE),
+        )
+        print(f"Đã tạo collection {COLLECTION_NAME} thành công!")
+
+init_db()
+
+# Load model embedding tiếng Việt chuyên dụng
+model = SentenceTransformer('keepitreal/vietnamese-sbert')
+
+# Dữ liệu giả lập
+sample_data = [
+    {"text": "Luật doanh nghiệp 2020 quy định về thành lập công ty TNHH.", "topic": "doanh nghiệp", "date": 2020},
+    {"text": "Mức phạt vi phạm nồng độ cồn khi lái xe ô tô là 30-40 triệu.", "topic": "giao thông", "date": 2019},
+    {"text": "Quy định về thuế thu nhập cá nhân năm 2023 có nhiều điểm mới.", "topic": "thuế", "date": 2023},
+]
+
+def insert_data():
+    # Tạo Payload Index trước khi insert để tối ưu tốc độ lọc
+    client.create_payload_index(collection_name=COLLECTION_NAME, field_name="topic", field_schema="keyword")
+    client.create_payload_index(collection_name=COLLECTION_NAME, field_name="date", field_schema="integer")
+
+    points = []
+    for doc in sample_data:
+        # Bước Ingest & Embed: Biến chữ thành mảng số 768 chiều
+        vector = model.encode(doc["text"]).tolist()
+        
+        # Đóng gói. Dùng uuid5 băm từ nội dung văn bản để luôn sinh ra 1 ID cố định
+        # Giúp tránh trùng lặp dữ liệu (duplicate) nếu bạn vô tình chạy lại hàm này nhiều lần
+        point_id = str(uuid.uuid5(uuid.NAMESPACE_DNS, doc["text"]))
+        
+        point = PointStruct(
+            id=point_id, 
+            vector=vector,
+            payload={"text": doc["text"], "topic": doc["topic"], "date": doc["date"]} # Đây chính là Metadata
+        )
+        points.append(point)
+        
+    client.upsert(collection_name=COLLECTION_NAME, points=points)
+    print("Đã tạo Payload Index và insert toàn bộ dữ liệu mẫu!")
+
+insert_data()
+
+app = FastAPI(title="Qdrant Search API")
+
+class SearchRequest(BaseModel):
+    query: str
+    top_k: int = 2
+    topic: Optional[str] = None
+    date: Optional[int] = None
+    threshold: float = 0.5
+
+@app.post("/search")
+def search_documents(req: SearchRequest):
+    # 1. Embed câu hỏi của người dùng ra vector
+    query_vector = model.encode(req.query).tolist()
+    
+    # 2. Xây dựng cấu trúc Lọc (Pre-filtering)
+    must_conditions = []
+    if req.topic:
+        must_conditions.append(FieldCondition(key="topic", match=MatchValue(value=req.topic)))
+    if req.date:
+        must_conditions.append(FieldCondition(key="date", match=MatchValue(value=req.date)))
+        
+    query_filter = Filter(must=must_conditions) if must_conditions else None
+        
+    # 3. Tiến hành tìm kiếm trong Qdrant
+    search_result = client.query_points(
+        collection_name=COLLECTION_NAME,
+        query=query_vector,
+        query_filter=query_filter,
+        limit=req.top_k,
+        score_threshold=req.threshold
+    ).points
+    
+    return {
+        "query": req.query,
+        "results": [
+            {"score": hit.score, "text": hit.payload["text"], "topic": hit.payload["topic"]} 
+            for hit in search_result
+        ]
+    }
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=1810)
