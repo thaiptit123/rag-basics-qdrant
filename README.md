@@ -6,7 +6,7 @@
 
 1. **Khởi động Qdrant server:**
    ```bash
-   docker-compose up -d
+   docker compose up -d
    ```
 
 2. **Cài đặt thư viện:**
