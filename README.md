@@ -1,6 +1,6 @@
 # RAG Basics - Qdrant Tutorial
 
-Đây là mã nguồn mẫu cho bài hướng dẫn sử dụng Qdrant Vector Database, Top-k, và Metadata Filtering (Pre-filtering) trong hệ thống RAG (Retrieval-Augmented Generation).
+Đây là mã nguồn mẫu cho bài hướng dẫn sử dụng Qdrant vector database, top-k, và metadata filtering (pre-filtering) trong hệ thống RAG (Retrieval-Augmented Generation).
 
 ## Hướng dẫn sử dụng
 
@@ -9,10 +9,19 @@
    docker compose up -d
    ```
 
-2. **Cài đặt thư viện:**
-   ```bash
-   pip install -r requirements.txt
-   ```
+2. **Tạo môi trường ảo (khuyên dùng) và cài đặt thư viện:**
+   - **Linux/macOS:**
+     ```bash
+     python3 -m venv venv
+     source venv/bin/activate
+     pip install -r requirements.txt
+     ```
+   - **Windows:**
+     ```cmd
+     python -m venv venv
+     venv\Scripts\activate
+     pip install -r requirements.txt
+     ```
 
 3. **Chạy ứng dụng API:**
    ```bash
