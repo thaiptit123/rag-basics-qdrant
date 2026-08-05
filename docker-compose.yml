@@ -1,4 +1,3 @@
-version: "3.3"
 services:
   qdrant:
     image: qdrant/qdrant:v1.10.0
