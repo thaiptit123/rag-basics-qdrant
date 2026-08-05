@@ -8,6 +8,7 @@ from pydantic import BaseModel
 from typing import Optional
 from qdrant_client.models import Filter, FieldCondition, MatchValue
 import uvicorn
+import json
 
 client = QdrantClient(url="http://localhost:6333")
 COLLECTION_NAME = "legal_documents"
@@ -24,14 +25,13 @@ def init_db():
 init_db()
 
 # Load model embedding tiếng Việt chuyên dụng
+print("Loading sentence-transformers model...")
 model = SentenceTransformer('keepitreal/vietnamese-sbert')
+print("Model loaded.")
 
-# Dữ liệu giả lập
-sample_data = [
-    {"text": "Quy định về thu hồi đất vì mục đích quốc phòng, an ninh và phát triển kinh tế.", "topic": "ThuHoiDat", "issuance_year": 2024},
-    {"text": "Điều kiện chuyển nhượng quyền sử dụng đất nông nghiệp.", "topic": "ChuyenNhuong", "issuance_year": 2024},
-    {"text": "Hạn mức giao đất ở tại nông thôn và đô thị.", "topic": "HanMucDat", "issuance_year": 2013},
-]
+# Dữ liệu mẫu load từ file
+with open("sample_data.json", "r", encoding="utf-8") as f:
+    sample_data = json.load(f)
 
 def insert_data():
     # Tạo Payload Index trước khi insert để tối ưu tốc độ lọc
