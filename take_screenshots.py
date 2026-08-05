@@ -24,9 +24,9 @@ async def main():
         time.sleep(0.5)
         # Fill body
         body_json = '''{
-  "query": "Thành lập công ty",
+  "query": "Điều kiện bán đất nông nghiệp",
   "top_k": 3,
-  "topic": "LuatKinhDoanh",
+  "topic": "ChuyenNhuong",
   "date": 0,
   "threshold": 0.6
 }'''

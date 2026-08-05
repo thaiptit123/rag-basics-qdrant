@@ -28,9 +28,9 @@ model = SentenceTransformer('keepitreal/vietnamese-sbert')
 
 # Dữ liệu giả lập
 sample_data = [
-    {"text": "Nhà nước thu hồi đất vì mục đích quốc phòng, an ninh, phát triển kinh tế xã hội.", "topic": "LuatDatDai", "issuance_year": 2024},
-    {"text": "Công ty cổ phần phải có tối thiểu 03 cổ đông và không hạn chế số lượng cổ đông tối đa.", "topic": "LuatKinhDoanh", "issuance_year": 2020},
-    {"text": "Mức thuế suất thu nhập doanh nghiệp phổ thông là 20% trừ một số trường hợp được ưu đãi.", "topic": "LuatKinhDoanh", "issuance_year": 2020},
+    {"text": "Quy định về thu hồi đất vì mục đích quốc phòng, an ninh và phát triển kinh tế.", "topic": "ThuHoiDat", "issuance_year": 2024},
+    {"text": "Điều kiện chuyển nhượng quyền sử dụng đất nông nghiệp.", "topic": "ChuyenNhuong", "issuance_year": 2024},
+    {"text": "Hạn mức giao đất ở tại nông thôn và đô thị.", "topic": "HanMucDat", "issuance_year": 2013},
 ]
 
 def insert_data():

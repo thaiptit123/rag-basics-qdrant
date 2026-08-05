@@ -10,15 +10,15 @@ print("Model loaded.")
 client = QdrantClient(url="http://localhost:6333")
 COLLECTION_NAME = "legal_documents"
 
-query_text = "Thành lập công ty"
+query_text = "Điều kiện bán đất nông nghiệp"
 query_vector = model.encode(query_text).tolist()
 
 scenarios = [
     {"name": "No filter, top-k=1, thresh=0.3", "top_k": 1, "thresh": 0.3, "topic": None},
     {"name": "No filter, top-k=3, thresh=0.3", "top_k": 3, "thresh": 0.3, "topic": None},
     {"name": "No filter, top-k=3, thresh=0.6", "top_k": 3, "thresh": 0.6, "topic": None},
-    {"name": "Filter LuatDatDai, top-k=3, thresh=0.6", "top_k": 3, "thresh": 0.6, "topic": "LuatDatDai"},
-    {"name": "Filter LuatKinhDoanh, top-k=3, thresh=0.6", "top_k": 3, "thresh": 0.6, "topic": "LuatKinhDoanh"},
+    {"name": "Filter ThuHoiDat, top-k=3, thresh=0.6", "top_k": 3, "thresh": 0.6, "topic": "ThuHoiDat"},
+    {"name": "Filter ChuyenNhuong, top-k=3, thresh=0.6", "top_k": 3, "thresh": 0.6, "topic": "ChuyenNhuong"},
 ]
 
 for s in scenarios:
