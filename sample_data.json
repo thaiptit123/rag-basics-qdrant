@@ -1,7 +1,7 @@
 [
-    {"text": "Luật doanh nghiệp 2020 quy định về thành lập công ty TNHH.", "topic": "doanh nghiệp", "issuance_year": 2020},
-    {"text": "Luật giao thông đường bộ 2008 quy định về đèn đỏ.", "topic": "giao thông", "issuance_year": 2008},
-    {"text": "Quy định thuế thu nhập cá nhân mới nhất.", "topic": "thuế", "issuance_year": 2023},
-    {"text": "Hướng dẫn đăng ký kinh doanh cho hộ gia đình.", "topic": "doanh nghiệp", "issuance_year": 2021},
-    {"text": "Biển báo giao thông mới áp dụng từ năm nay.", "topic": "giao thông", "issuance_year": 2023}
+    {"text": "Nhà nước thu hồi đất vì mục đích quốc phòng, an ninh, phát triển kinh tế xã hội.", "topic": "LuatDatDai", "issuance_year": 2024},
+    {"text": "Công ty cổ phần phải có tối thiểu 03 cổ đông và không hạn chế số lượng cổ đông tối đa.", "topic": "LuatKinhDoanh", "issuance_year": 2020},
+    {"text": "Đất đai thuộc sở hữu toàn dân do Nhà nước đại diện chủ sở hữu và thống nhất quản lý.", "topic": "LuatDatDai", "issuance_year": 2013},
+    {"text": "Mức thuế suất thu nhập doanh nghiệp phổ thông là 20% trừ một số trường hợp được ưu đãi.", "topic": "LuatKinhDoanh", "issuance_year": 2020},
+    {"text": "Doanh nghiệp tư nhân là doanh nghiệp do một cá nhân làm chủ và tự chịu trách nhiệm bằng toàn bộ tài sản của mình.", "topic": "LuatKinhDoanh", "issuance_year": 2020}
 ]

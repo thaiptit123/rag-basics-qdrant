@@ -28,9 +28,9 @@ model = SentenceTransformer('keepitreal/vietnamese-sbert')
 
 # Dữ liệu giả lập
 sample_data = [
-    {"text": "Luật doanh nghiệp 2020 quy định về thành lập công ty TNHH.", "topic": "doanh nghiệp", "issuance_year": 2020},
-    {"text": "Mức phạt vi phạm nồng độ cồn khi lái xe ô tô là 30-40 triệu.", "topic": "giao thông", "issuance_year": 2019},
-    {"text": "Quy định về thuế thu nhập cá nhân năm 2023 có nhiều điểm mới.", "topic": "thuế", "issuance_year": 2023},
+    {"text": "Nhà nước thu hồi đất vì mục đích quốc phòng, an ninh, phát triển kinh tế xã hội.", "topic": "LuatDatDai", "issuance_year": 2024},
+    {"text": "Công ty cổ phần phải có tối thiểu 03 cổ đông và không hạn chế số lượng cổ đông tối đa.", "topic": "LuatKinhDoanh", "issuance_year": 2020},
+    {"text": "Mức thuế suất thu nhập doanh nghiệp phổ thông là 20% trừ một số trường hợp được ưu đãi.", "topic": "LuatKinhDoanh", "issuance_year": 2020},
 ]
 
 def insert_data():
